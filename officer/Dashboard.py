@@ -280,7 +280,16 @@ def get_officer_data():
 # =====================================================
 @st.cache_resource(show_spinner=False)
 def init_gee():
-    ee.Initialize(project=GEE_PROJECT_ID)
+    service_account_info = json.loads(
+        st.secrets["GEE_SERVICE_ACCOUNT_JSON"]
+    )
+
+    credentials = ee.ServiceAccountCredentials(
+        service_account_info["client_email"],
+        key_data=json.dumps(service_account_info),
+    )
+
+    ee.Initialize(credentials, project=GEE_PROJECT_ID)
     return True
 
 
